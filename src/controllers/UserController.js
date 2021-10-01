@@ -40,26 +40,53 @@ class UserController {
 
   async update(req, res) {
     try {
-      const user = await User.findByPk(req.params.id);
-      user.update({
-        nome: req.body.nome,
-        password: req.body.password,
-      });
+      const { id } = req.params;
+      if (!id) {
+        return res.json({
+          errors: ['Id não informado'],
+        });
+      }
+      const user = await User.findByPk(id);
+
+      if (!user) {
+        return res.json({
+          errors: ['Usuário não encontrado'],
+        });
+      }
+
+      user.update(req.body);
 
       return res.json(user);
-    } catch (error) {
-      return res.json(null);
+    } catch (e) {
+      return res.status(400).json({
+        errors: e.errors.map((error) => error.message),
+      });
     }
   }
 
   async delete(req, res) {
     try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.json({
+          errors: ['Id não informado'],
+        });
+      }
       const user = await User.findByPk(req.params.id);
+
+      if (!user) {
+        return res.json({
+          errors: ['Usuário não encontrado'],
+        });
+      }
       user.destroy();
 
       return res.json(user);
-    } catch (error) {
-      return res.json(null);
+    } catch (e) {
+      return res.status(400).json({
+        errors: e.errors.map((error) => error.message),
+      });
     }
   }
 }
