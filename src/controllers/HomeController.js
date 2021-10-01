@@ -10,7 +10,7 @@ class HomeController {
       peso: 120,
       altura: 1.81,
     });
-    res.json({
+    return res.json({
       aluno: novoAluno,
     });
   }
