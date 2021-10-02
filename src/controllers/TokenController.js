@@ -1,5 +1,5 @@
+import jtw from 'jsonwebtoken';
 import User from '../models/User';
-import { } from 'jsonwebtoken';
 
 class TokenController {
   async create(req, res) {
@@ -18,7 +18,20 @@ class TokenController {
         errors: ['Usuário não encontrado'],
       });
     }
-    return res.json(user);
+
+    const isValidPassword = await user.checkPassword(password);
+
+    if (!isValidPassword) {
+      return res.status(401).json({
+        errors: ['Senha inválida'],
+      });
+    }
+    const { id } = user;
+    const token = jtw.sign({ id, email }, process.env.TOKEN_SECRET, {
+      expiresIn: process.env.TOKEN_EXPIRATION,
+    });
+
+    return res.json({ token });
   }
 }
 
