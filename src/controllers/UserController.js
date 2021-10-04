@@ -8,10 +8,8 @@ class UserController {
         email: req.body.email,
         password: req.body.password,
       });
-
-      return res.json({
-        user: novoUser,
-      });
+      const { id, nome, email } = novoUser;
+      return res.json({ id, nome, email });
     } catch (e) {
       return res.status(400).json({
         errors: e.errors.map((error) => error.message),
@@ -40,13 +38,7 @@ class UserController {
 
   async update(req, res) {
     try {
-      const { id } = req.params;
-      if (!id) {
-        return res.json({
-          errors: ['Id não informado'],
-        });
-      }
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(req.userId);
 
       if (!user) {
         return res.json({
@@ -66,14 +58,7 @@ class UserController {
 
   async delete(req, res) {
     try {
-      const { id } = req.params;
-
-      if (!id) {
-        return res.json({
-          errors: ['Id não informado'],
-        });
-      }
-      const user = await User.findByPk(req.params.id);
+      const user = await User.findByPk(req.userId);
 
       if (!user) {
         return res.json({
