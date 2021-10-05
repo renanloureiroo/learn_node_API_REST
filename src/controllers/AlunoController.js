@@ -58,6 +58,7 @@ class AlunoController {
       }
 
       await aluno.update(req.body);
+
       return res.json(aluno);
     } catch (e) {
       return res.status(400).json({ erros: e.map((err) => err.msg) });
