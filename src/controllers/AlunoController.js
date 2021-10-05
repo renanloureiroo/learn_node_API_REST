@@ -13,20 +13,76 @@ class AlunoController {
 
   async create(req, res) {
     try {
-      const novoAluno = await Aluno.create({
-        nome: req.body.nome,
-        sobrenome: req.body.sobrenome,
-        email: req.body.email,
-        idade: req.body.idade,
-        peso: req.body.peso,
-        altura: req.body.altura,
-      });
+      const novoAluno = await Aluno.create(req.body);
 
       return res.json(novoAluno);
     } catch (error) {
       return res.status(400).json({
-        errors: error.errors.map((e) => e.message),
+        errors: error.errors.map((e) => e.msg),
       });
+    }
+  }
+
+  async show(req, res) {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.status(400).json({ erros: ['Missing ID'] });
+      }
+
+      const aluno = await Aluno.findByPk(id);
+
+      if (!aluno) {
+        return res.status(400).json({ erros: ['Aluno não encontrado'] });
+      }
+
+      return res.json(aluno);
+    } catch (e) {
+      return res.status(400).json({ erros: e.map((err) => err.msg) });
+    }
+  }
+
+  async update(req, res) {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.status(400).json({ erros: ['Missing ID'] });
+      }
+
+      const aluno = await Aluno.findByPk(id);
+
+      if (!aluno) {
+        return res.status(400).json({ erros: ['Aluno não encontrado'] });
+      }
+
+      await aluno.update(req.body);
+      return res.json(aluno);
+    } catch (e) {
+      return res.status(400).json({ erros: e.map((err) => err.msg) });
+    }
+  }
+
+  async delete(req, res) {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.status(400).json({ erros: ['Missing ID'] });
+      }
+
+      const aluno = await Aluno.findByPk(id);
+
+      if (!aluno) {
+        return res.status(400).json({ erros: ['Aluno não encontrado'] });
+      }
+
+      await aluno.destroy();
+
+      return res.json(aluno);
+    } catch (e) {
+      return res.status(400).json({ erros: e.map((err) => err.msg) });
     }
   }
 }
