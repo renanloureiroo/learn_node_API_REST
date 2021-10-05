@@ -12,7 +12,18 @@ export default class Aluno extends Model {
         },
       },
       sobrenome: Sequelize.STRING,
-      email: Sequelize.STRING,
+      email: {
+        type: Sequelize.STRING,
+        defaultValue: '',
+        unique: {
+          msg: 'Email já cadastrado',
+        },
+        validate: {
+          isEmail: {
+            msg: 'Email inválido',
+          },
+        },
+      },
       idade: Sequelize.INTEGER,
       peso: Sequelize.FLOAT,
       altura: Sequelize.FLOAT,
