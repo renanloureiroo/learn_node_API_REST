@@ -1,6 +1,8 @@
 import Sequelize, { Model } from 'sequelize';
 
-export default class Aluno extends Model {
+import app from '../config/app';
+
+export default class Foto extends Model {
   static init(sequelize) {
     super.init({
       originalname: {
@@ -17,6 +19,12 @@ export default class Aluno extends Model {
           notEmpty: {
             msg: "Don't empty",
           },
+        },
+      },
+      url: {
+        type: Sequelize.VIRTUAL,
+        get() {
+          return `${app.url}/images/${this.getDataValue('filename')}`;
         },
       },
     }, {
